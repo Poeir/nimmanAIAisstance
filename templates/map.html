@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nimman Smart Travel Guide</title>
+
+    <!-- Leaflet JS for Map -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Thai Font - Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS for Map -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nimman: {
+                            purple: '#6A0DAD', // เพิ่มสีม่วงเชียงใหม่เป็นสีหลัก
+                            lightpurple: '#9370DB', // สีม่วงอ่อน
+                            pink: '#FF6B6B',  // สีชมพูอมแดง
+                            yellow: '#FFD93D',  // สีเหลืองสดใส
+                            teal: '#4ECDC4',   // สีฟ้าน้ำทะเล
+                            navy: '#1A535C', // สีกรมท่า
+                            light: '#F7F9F9' // สีพื้นหลังอ่อน
+                        }
+                    },
+                    fontFamily: {
+                        thai: ['Prompt', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1.5s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 3s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(50px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-b from-nimman-light to-white min-h-screen">
+<!-- 3. Map Screen -->
+    <div class="screen map-screen flex flex-col min-h-screen bg-white" id="map-screen">
+        <!-- Top Navigation Bar -->
+        <div class="bg-nimman-purple text-white p-4 shadow-md z-20 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="img/logo_3D.png" alt="Logo" class="h-10 w-10 mr-2">
+                <h1 class="text-xl font-bold">แผนที่นิมมาน</h1>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="togglePlanner()" class="bg-white text-nimman-purple p-2 rounded-full">
+                    <i class="fas fa-list"></i>
+                </button>
+                <button onclick="showScreen('home-screen')" class="bg-white text-nimman-purple p-2 rounded-full">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="flex flex-grow relative">
+            <!-- Map Container -->
+            <div id="map" class="w-full"></div>
+            
+            <!-- Travel Planner Sidebar -->
+            <div id="planner-sidebar" class="hidden absolute top-0 right-0 h-full w-80 bg-white shadow-lg z-10 overflow-y-auto transform transition-transform duration-300 hide-scrollbar">
+                <div class="p-4 bg-nimman-purple text-white flex justify-between items-center">
+                    <h2 class="font-bold text-lg">แผนการเดินทาง</h2>
+                    <button onclick="togglePlanner()" class="text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="p-4">
+                    <h3 class="font-medium text-nimman-purple mb-3">สถานที่ที่จะไป</h3>
+                    
+                    <!-- Sample Itinerary -->
+                    <div class="space-y-4">
+                        <div class="bg-gray-100 p-3 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium">One Nimman</h4>
+                                    <p class="text-sm text-gray-600">ศูนย์การค้า & คอมมูนิตี้มอลล์</p>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <button class="text-gray-500 hover:text-nimman-purple">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-gray-500 hover:text-red-500">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-sm">
+                                <div><i class="far fa-clock mr-1"></i> 10:00 - 12:00</div>
+                                <div class="flex items-center mt-1 text-nimman-purple">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                    <span class="underline cursor-pointer" onclick="focusLocation([18.7968, 98.9677])">ดูในแผนที่</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-100 p-3 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium">ดอยสุเทพ</h4>
+                                    <p class="text-sm text-gray-600">วัดและสถานที่ศักดิ์สิทธิ์</p>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <button class="text-gray-500 hover:text-nimman-purple">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-gray-500 hover:text-red-500">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-sm">
+                                <div><i class="far fa-clock mr-1"></i> 14:00 - 16:00</div>
+                                <div class="flex items-center mt-1 text-nimman-purple">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                    <span class="underline cursor-pointer" onclick="focusLocation([18.8048, 98.9210])">ดูในแผนที่</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Add New Place Button -->
+                    <button class="mt-4 w-full py-2 bg-nimman-purple text-white rounded-lg flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span>เพิ่มสถานที่</span>
+                    </button>
+                    
+                    <!-- Categories Section -->
+                    <div class="mt-8">
+                        <h3 class="font-medium text-nimman-purple mb-3">หมวดหมู่</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="py-2 px-3 bg-nimman-purple/10 rounded-lg text-nimman-purple text-sm hover:bg-nimman-purple/20">
+                                <i class="fas fa-utensils mr-1"></i> ร้านอาหาร
+                            </button>
+                            <button class="py-2 px-3 bg-nimman-purple/10 rounded-lg text-nimman-purple text-sm hover:bg-nimman-purple/20">
+                                <i class="fas fa-coffee mr-1"></i> คาเฟ่
+                            </button>
+                            <button class="py-2 px-3 bg-nimman-purple/10 rounded-lg text-nimman-purple text-sm hover:bg-nimman-purple/20">
+                                <i class="fas fa-bed mr-1"></i> ที่พัก
+                            </button>
+                            <button class="py-2 px-3 bg-nimman-purple/10 rounded-lg text-nimman-purple text-sm hover:bg-nimman-purple/20">
+                                <i class="fas fa-shopping-bag mr-1"></i> ช้อปปิ้ง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav grid grid-cols-3 text-center py-2">
+            <div onclick="showScreen('home-screen')" class="flex flex-col items-center justify-center text-gray-500">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs mt-1">หน้าหลัก</span>
+            </div>
+            <div onclick="showScreen('map-screen')" class="flex flex-col items-center justify-center text-nimman-purple">
+                <i class="fas fa-map-marked-alt text-lg"></i>
+                <span class="text-xs mt-1">แผนที่</span>
+            </div>
+            <div onclick="showScreen('chatbot-screen')" class="flex flex-col items-center justify-center text-gray-500">
+                <i class="fas fa-robot text-lg"></i>
+                <span class="text-xs mt-1">แชทบอท</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

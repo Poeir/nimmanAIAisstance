@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nimman Smart Travel Guide</title>
+
+    <!-- Leaflet JS for Map -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Thai Font - Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS for Map -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="static/css/styles.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nimman: {
+                            purple: '#6A0DAD', // เพิ่มสีม่วงเชียงใหม่เป็นสีหลัก
+                            lightpurple: '#9370DB', // สีม่วงอ่อน
+                            pink: '#FF6B6B',  // สีชมพูอมแดง
+                            yellow: '#FFD93D',  // สีเหลืองสดใส
+                            teal: '#4ECDC4',   // สีฟ้าน้ำทะเล
+                            navy: '#1A535C', // สีกรมท่า
+                            light: '#F7F9F9' // สีพื้นหลังอ่อน
+                        }
+                    },
+                    fontFamily: {
+                        thai: ['Prompt', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1.5s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 3s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(50px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-b from-nimman-light to-white min-h-screen">
+    <!-- 2. Home Screen with Navigation -->
+    <div class="screen home-screen flex flex-col min-h-screen bg-white" id="home-screen">
+        <!-- Top Navigation Bar -->
+        <div class="bg-nimman-purple text-white p-4 shadow-md z-20 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="static/img/logo_3D.png" alt="Logo" class="h-10 w-10 mr-2">
+                <h1 class="text-xl font-bold">นิมมานสมาร์ทไกด์</h1>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="showScreen('splash-screen')" class="bg-white text-nimman-purple p-2 rounded-full">
+                    <i class="fas fa-home"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content Area - Feature Tiles -->
+        <div class="flex-grow p-4 pt-6 bg-gray-50">
+            <h2 class="text-2xl font-bold text-nimman-purple mb-6 text-center">บริการที่เราภูมิใจนำเสนอ</h2>
+            
+            <!-- Feature Grid -->
+            <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                <!-- Map Feature -->
+                <div onclick="showScreen('map-screen')" class="bg-white rounded-xl shadow-md p-4 flex flex-col items-center justify-center cursor-pointer transform transition hover:scale-105">
+                    <div class="bg-nimman-purple/10 w-16 h-16 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-map-marked-alt text-2xl text-nimman-purple"></i>
+                    </div>
+                    <h3 class="font-medium text-nimman-purple text-lg">แผนที่</h3>
+                    <p class="text-sm text-gray-500 text-center mt-1">ค้นหาสถานที่ท่องเที่ยว</p>
+                </div>
+                
+                <!-- Chatbot Feature -->
+                <div onclick="showScreen('chatbot-screen')" class="bg-white rounded-xl shadow-md p-4 flex flex-col items-center justify-center cursor-pointer transform transition hover:scale-105">
+                    <div class="bg-nimman-purple/10 w-16 h-16 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-robot text-2xl text-nimman-purple"></i>
+                    </div>
+                    <h3 class="font-medium text-nimman-purple text-lg">แชทบอท</h3>
+                    <p class="text-sm text-gray-500 text-center mt-1">สอบถามข้อมูลน้องนิ่ม</p>
+                </div>
+                
+                <!-- Planner Feature -->
+                <div class="bg-white rounded-xl shadow-md p-4 flex flex-col items-center justify-center cursor-pointer transform transition hover:scale-105">
+                    <div class="bg-nimman-purple/10 w-16 h-16 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-list-check text-2xl text-nimman-purple"></i>
+                    </div>
+                    <h3 class="font-medium text-nimman-purple text-lg">แผนเที่ยว</h3>
+                    <p class="text-sm text-gray-500 text-center mt-1">วางแผนทริปของคุณ</p>
+                </div>
+                
+                <!-- Guide Feature -->
+                <div class="bg-white rounded-xl shadow-md p-4 flex flex-col items-center justify-center cursor-pointer transform transition hover:scale-105">
+                    <div class="bg-nimman-purple/10 w-16 h-16 rounded-full flex items-center justify-center mb-3">
+                        <i class="fas fa-compass text-2xl text-nimman-purple"></i>
+                    </div>
+                    <h3 class="font-medium text-nimman-purple text-lg">แนะนำ</h3>
+                    <p class="text-sm text-gray-500 text-center mt-1">สถานที่แนะนำยอดนิยม</p>
+                </div>
+            </div>
+            
+            <!-- New Feature Section -->
+            <div class="mt-8 max-w-md mx-auto">
+                <div class="bg-gradient-to-r from-nimman-purple to-nimman-lightpurple rounded-xl shadow-lg p-4 text-white">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-white/20 rounded-full p-2 mr-3">
+                            <i class="fas fa-bullhorn text-white"></i>
+                        </div>
+                        <h3 class="font-medium text-lg">AI Chatbot</h3>
+                    </div>
+                    <p class="text-white/90 mb-3">ตอนนี้น้องไลก้าสามารถช่วยแนะนำสถานที่ต่าง ๆ ตามความชอบของคุณได้แล้ว!</p>
+                    <button class="bg-white text-nimman-purple font-medium py-2 px-4 rounded-lg w-full">
+                        ลองกดเลย
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav grid grid-cols-3 text-center py-2">
+            <div onclick="showScreen('home-screen')" class="flex flex-col items-center justify-center text-nimman-purple">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs mt-1">หน้าหลัก</span>
+            </div>
+            <div onclick="showScreen('map-screen')" class="flex flex-col items-center justify-center text-gray-500">
+                <i class="fas fa-map-marked-alt text-lg"></i>
+                <span class="text-xs mt-1">แผนที่</span>
+            </div>
+            <div onclick="showScreen('chatbot-screen')" class="flex flex-col items-center justify-center text-gray-500">
+                <i class="fas fa-robot text-lg"></i>
+                <span class="text-xs mt-1">แชทบอท</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

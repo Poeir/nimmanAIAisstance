@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nimman Smart Travel Guide</title>
+
+    <!-- Leaflet JS for Map -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Thai Font - Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS for Map -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nimman: {
+                            purple: '#6A0DAD', // เพิ่มสีม่วงเชียงใหม่เป็นสีหลัก
+                            lightpurple: '#9370DB', // สีม่วงอ่อน
+                            pink: '#FF6B6B',  // สีชมพูอมแดง
+                            yellow: '#FFD93D',  // สีเหลืองสดใส
+                            teal: '#4ECDC4',   // สีฟ้าน้ำทะเล
+                            navy: '#1A535C', // สีกรมท่า
+                            light: '#F7F9F9' // สีพื้นหลังอ่อน
+                        }
+                    },
+                    fontFamily: {
+                        thai: ['Prompt', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 1.5s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'pulse-slow': 'pulse 3s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(50px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-b from-nimman-light to-white min-h-screen">
+    <!-- 4. Chatbot Screen -->
+    <div class="screen chatbot-screen flex flex-col min-h-screen bg-white" id="chatbot-screen">
+        <!-- Top Navigation Bar -->
+        <div class="bg-nimman-purple text-white p-4 shadow-md z-20 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="img/logo_3D.png" alt="Logo" class="h-10 w-10 mr-2">
+                <h1 class="text-xl font-bold">น้องนิ่ม AI แชทบอท</h1>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="showScreen('home-screen')" class="bg-white text-nimman-purple p-2 rounded-full">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chatbot Avatar -->
+        <div class="bg-gradient-to-b from-nimman-purple/10 to-white py-6 px-4 flex flex-col items-center">
+            <div class="relative mb-4">
+                <div class="absolute inset-0 bg-nimman-purple rounded-full blur-xl opacity-20 animate-pulse-slow"></div>
+                <div class="relative bg-white rounded-full p-3 shadow-md">
+                    <img src="img/logo_3D.png" alt="Chatbot Avatar" class="w-20 h-20 object-contain">
+                </div>
+            </div>
+            <h2 class="text-xl font-bold text-nimman-purple">น้องนิ่ม</h2>
+            <p class="text-sm text-gray-600">ผู้เชี่ยวชาญการท่องเที่ยวย่านนิมมานเหมินทร์</p>
+        </div>
+        
+             <!-- Chat Messages -->
+             <div class="chat-messages bg-gray-100 flex flex-col space-y-3 hide-scrollbar" id="chat-messages">
+                <div class="bot-message rounded-lg p-3 max-w-xs mx-2 mb-2">
+                    สวัสดีค่ะ! หนูคือน้องนิ่ม AI แชทบอท พร้อมแนะนำเรื่องการท่องเที่ยวนิมมานเหมินทร์ค่ะ มีอะไรให้ช่วยไหมคะ?
+                </div>
+            </div>
+            
+            <!-- Chat Input -->
+            <div class="chat-input bg-white p-3 flex border-t border-gray-200">
+                <input type="text" id="chat-input" placeholder="พิมพ์ข้อความถามน้องนิ่ม..." class="flex-grow bg-gray-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-nimman-purple">
+                <button id="send-message" class="ml-2 bg-nimman-purple text-white rounded-full w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- JavaScript-->
+    <script src="js/nimman.js"></script>
+</body>
+</html>

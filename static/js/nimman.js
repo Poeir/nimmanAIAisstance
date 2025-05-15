@@ -45,6 +45,15 @@ function showScreen(screenId) {
             }, 100);
         }
     }
+        // Mapping screenId เป็น path ที่ต้องการ
+    const pathMap = {
+        'home-screen': '/home',
+        'map-screen': '/map',
+        'chatbot-screen': '/chatbot'
+    };
+    const newPath = pathMap[screenId] || '/';
+    // เปลี่ยน URL โดยไม่รีโหลดหน้า
+    window.history.pushState({}, '', newPath);
 }
 
 // Map Functions
