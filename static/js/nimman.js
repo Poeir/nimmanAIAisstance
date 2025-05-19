@@ -45,15 +45,6 @@ function showScreen(screenId) {
             }, 100);
         }
     }
-        // Mapping screenId เป็น path ที่ต้องการ
-    const pathMap = {
-        'home-screen': '/home',
-        'map-screen': '/map',
-        'chatbot-screen': '/chatbot'
-    };
-    const newPath = pathMap[screenId] || '/';
-    // เปลี่ยน URL โดยไม่รีโหลดหน้า
-    window.history.pushState({}, '', newPath);
 }
 
 // Map Functions
@@ -263,91 +254,37 @@ function initChatbot() {
     const chatInput = document.getElementById('chat-input');
     const sendButton = document.getElementById('send-message');
     const chatMessages = document.getElementById('chat-messages');
-    
-    // Chat API endpoint (replace with your actual API endpoint)
-    const chatApiEndpoint = 'https://api.nimmansmartguide.com/chat';
-    
-    // Function to call the chat API
+
+    const chatApiEndpoint = 'http://127.0.0.1:8000/chat';
+
     async function getChatbotResponse(message) {
         try {
-            // In a real implementation, this would be an actual API call
-            // For demonstration purposes, we'll simulate the API response
-            
-            // Simulated API call
-            // return await fetch(chatApiEndpoint, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({ message: message })
-            // }).then(response => response.json());
-            
-            // Simulated API response (to be replaced with actual API)
-            await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network delay
-            
-            // Sample responses based on keywords (simulating API responses)
-            if (message.toLowerCase().includes('สวัสดี')) {
-                return { response: "สวัสดีค่ะ! มีอะไรให้น้องนิ่มช่วยเกี่ยวกับการท่องเที่ยวนิมมานไหมคะ?" };
-            } else if (message.toLowerCase().includes('ร้านอาหาร')) {
-                return { 
-                    response: "ย่านนิมมานมีร้านอาหารมากมายให้เลือก! แนะนำดังนี้ค่ะ",
-                    locations: [
-                        { name: "The Larder Café & Bar", type: "ร้านอาหาร", details: "ร้านอาหารฟิวชั่นสไตล์ยุโรป บรรยากาศดี" },
-                        { name: "Rustic & Blue", type: "ร้านอาหาร", details: "ร้านอาหารสไตล์ฟาร์มทูเทเบิล เมนูออร์แกนิค" },
-                        { name: "Ginger Farm Kitchen", type: "ร้านอาหาร", details: "ร้านอาหารไทยสไตล์โมเดิร์น เน้นวัตถุดิบจากฟาร์ม" },
-                        { name: "Beast Burger", type: "ร้านอาหาร", details: "ร้านเบอร์เกอร์สไตล์อเมริกัน เนื้อคุณภาพดี" }
-                    ]
-                };
-            } else if (message.toLowerCase().includes('คาเฟ่')) {
-                return {
-                    response: "คาเฟ่ดังในย่านนิมมานมีหลายแห่งค่ะ ลองดูเหล่านี้ค่ะ",
-                    locations: [
-                        { name: "Ristr8to Coffee", type: "คาเฟ่", details: "ร้านกาแฟชื่อดังที่มีเมนูกาแฟหลากหลายและลาเต้อาร์ตสวยงาม" },
-                        { name: "Graph Cafe", type: "คาเฟ่", details: "คาเฟ่สไตล์มินิมอล เน้นกาแฟสเปเชียลตี้" },
-                        { name: "Asama Cafe", type: "คาเฟ่", details: "คาเฟ่บรรยากาศร่มรื่น มีเมนูของหวานหลากหลาย" },
-                        { name: "SS1254372 Cafe", type: "คาเฟ่", details: "คาเฟ่สไตล์ล้านนาร่วมสมัย มีเมนูกาแฟและเค้กโฮมเมด" }
-                    ]
-                };
-            } else if (message.toLowerCase().includes('ที่พัก')) {
-                return {
-                    response: "นิมมานมีที่พักหลายระดับราคาค่ะ แนะนำดังนี้",
-                    locations: [
-                        { name: "Hyde Park Chiangmai", type: "โรงแรม", details: "โรงแรมสไตล์ลักซ์ชัวรี่ ใกล้แหล่งช้อปปิ้ง" },
-                        { name: "Nimman House Hotel", type: "โรงแรม", details: "โรงแรมบูติกสไตล์โมเดิร์น ใจกลางนิมมาน" },
-                        { name: "BED Phrasingh", type: "ที่พัก", details: "โฮสเทลสไตล์มินิมอล ราคาประหยัด" },
-                        { name: "The Astra Condo", type: "ที่พัก", details: "คอนโดให้เช่ารายวัน มีสิ่งอำนวยความสะดวกครบครัน" }
-                    ]
-                };
-            } else if (message.toLowerCase().includes('ช้อปปิ้ง') || message.toLowerCase().includes('shopping')) {
-                return {
-                    response: "แหล่งช้อปปิ้งในนิมมานที่น่าสนใจมีดังนี้ค่ะ",
-                    locations: [
-                        { name: "One Nimman", type: "ศูนย์การค้า", details: "ศูนย์การค้าสไตล์ล้านนาร่วมสมัย รวมร้านค้าและร้านอาหาร" },
-                        { name: "Think Park", type: "คอมมูนิตี้มอลล์", details: "แหล่งช้อปปิ้งและพบปะสังสรรค์ที่มีร้านค้าเล็กๆ น่ารัก" },
-                        { name: "Maya Lifestyle Shopping Center", type: "ห้างสรรพสินค้า", details: "ไลฟ์สไตล์มอลล์ที่ใหญ่ที่สุดในย่านนิมมาน" },
-                        { name: "Nimman Promenade", type: "ศูนย์การค้า", details: "ศูนย์การค้าขนาดกลาง มีร้านค้าและร้านอาหารหลากหลาย" }
-                    ]
-                };
-            } else {
-                return { response: "ขออภัยค่ะ น้องนิ่มไม่เข้าใจคำถาม ลองถามเกี่ยวกับร้านอาหาร คาเฟ่ ที่พัก หรือแหล่งช้อปปิ้งในย่านนิมมานดูนะคะ" };
+            const response = await fetch(chatApiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: message })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+
+            return await response.json(); // expected: { response: "...", locations: [...] }
         } catch (error) {
             console.error('Error fetching chatbot response:', error);
             return { response: "ขออภัยค่ะ เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้งค่ะ" };
         }
     }
-    
-    // Function to add a location to the map from the chat
+
     function addLocationToMap(location) {
         if (window.map && location) {
-            // This is a simplified version - in a real app, you would fetch coordinates from an API
-            // For demonstration, we'll use random coordinates near Nimman area
             const lat = 18.8005 + (Math.random() - 0.5) * 0.01;
             const lng = 98.9679 + (Math.random() - 0.5) * 0.01;
-            
+
             const iconName = getIconByLocationType(location.type);
-            
-            // Create marker with appropriate icon
+
             const customIcon = L.divIcon({
                 html: `<div class="map-marker bg-nimman-purple shadow-lg rounded-full p-2 border-2 border-white">
                         <i class="fas fa-${iconName} text-white"></i>
@@ -356,12 +293,9 @@ function initChatbot() {
                 iconSize: [30, 30],
                 iconAnchor: [15, 15]
             });
-            
-            const marker = L.marker([lat, lng], {
-                icon: customIcon
-            }).addTo(window.map);
-            
-            // Create popup content
+
+            const marker = L.marker([lat, lng], { icon: customIcon }).addTo(window.map);
+
             const popupContent = `
                 <div class="popup-content p-2">
                     <h3 class="font-bold text-nimman-purple">${location.name}</h3>
@@ -378,21 +312,19 @@ function initChatbot() {
                     </div>
                 </div>
             `;
-            
+
             marker.bindPopup(popupContent);
         }
     }
-    
-    // Function to display locations in chat
+
     function displayLocations(locations) {
         if (!locations || locations.length === 0) return;
-        
-        // Create a locations container
+
         const locationsContainer = document.createElement('div');
         locationsContainer.className = 'locations-container bg-gray-100 rounded-lg p-2 mt-2 max-w-xs';
-        
-        // Add each location
+
         locations.forEach(location => {
+            const escapedLocation = JSON.stringify(location).replace(/"/g, '&quot;');
             const locationElement = document.createElement('div');
             locationElement.className = 'location-item p-2 mb-2 border-b border-gray-300';
             locationElement.innerHTML = `
@@ -400,37 +332,51 @@ function initChatbot() {
                 <div class="text-xs text-gray-600">${location.type}</div>
                 <div class="text-sm">${location.details}</div>
                 <button class="text-xs bg-nimman-purple text-white px-2 py-1 rounded mt-1" 
-                        onclick="showScreen('map-screen'); setTimeout(() => { addLocationToMap(${JSON.stringify(location).replace(/"/g, '&quot;')}) }, 500);">
+                        onclick="showScreen('map-screen'); setTimeout(() => { addLocationToMap(${escapedLocation}) }, 500);">
                     <i class="fas fa-map-marker-alt mr-1"></i> ดูในแผนที่
                 </button>
             `;
             locationsContainer.appendChild(locationElement);
         });
-        
-        // Add to chat messages
+
         chatMessages.appendChild(locationsContainer);
-        
-        // Add locations to map
-        locations.forEach(location => {
-            addLocationToMap(location);
-        });
-        
-        // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        locations.forEach(addLocationToMap);
     }
-    
-    // Function to handle sending messages
+
+    async function typeMessage(content, sender) {
+    const messageElement = document.createElement('div');
+    messageElement.className = sender === 'user'
+        ? 'user-message bg-nimman-purple text-white rounded-lg p-3 max-w-xs ml-auto mr-2 mb-2'
+        : 'bot-message bg-nimman-purple text-white rounded-lg p-3 max-w-xs mx-2 mb-2';
+
+    // แปลงข้อความก่อนแสดง
+    let formatted = content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+
+    messageElement.innerHTML = '';
+
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // พิมพ์ทีละตัวอักษร แบบง่ายๆ
+    for (let i = 0; i < formatted.length; i++) {
+        messageElement.innerHTML = formatted.substring(0, i + 1);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        await new Promise(resolve => setTimeout(resolve, 20));  // ความเร็วการพิมพ์
+    }
+}
+
+
     async function sendMessage() {
         const message = chatInput.value.trim();
-        if (message === '') return;
-        
-        // Add user message to chat
+        if (!message) return;
+
         addMessage(message, 'user');
-        
-        // Clear input
         chatInput.value = '';
-        
-        // Show typing indicator
+
         const typingIndicator = document.createElement('div');
         typingIndicator.className = 'typing-indicator bg-gray-200 rounded-lg p-3 max-w-xs mx-2 mb-2 flex';
         typingIndicator.innerHTML = `
@@ -439,47 +385,44 @@ function initChatbot() {
             <div class="dot"></div>
         `;
         chatMessages.appendChild(typingIndicator);
-        
-        // Get response from API
+
         const response = await getChatbotResponse(message);
-        
-        // Remove typing indicator
         chatMessages.removeChild(typingIndicator);
-        
-        // Add bot response to chat
-        addMessage(response.response, 'bot');
-        
-        // If response includes locations, display them
+
+        typeMessage(response.answer || "ขออภัยค่ะ ไม่มีการตอบกลับจากระบบ", 'bot');
+
         if (response.locations) {
             displayLocations(response.locations);
         }
     }
-    
-    // Function to add message to chat
+
     function addMessage(content, sender) {
-        const messageElement = document.createElement('div');
-        messageElement.className = sender === 'user' 
-            ? 'user-message bg-nimman-purple text-white rounded-lg p-3 max-w-xs ml-auto mr-2 mb-2' 
-            : 'bot-message bg-gray-200 rounded-lg p-3 max-w-xs mx-2 mb-2';
-        messageElement.textContent = content;
-        
-        chatMessages.appendChild(messageElement);
-        
-        // Scroll to bottom
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    
-    // Expose addLocationToMap function globally
+    const messageElement = document.createElement('div');
+    messageElement.className = sender === 'user'
+        ? 'user-message bg-nimman-purple text-white rounded-lg p-3 max-w-xs ml-auto mr-2 mb-2'
+        : 'bot-message bg-nimman-purple text-white rounded-lg p-3 max-w-xs mx-2 mb-2';
+
+    // แปลงข้อความให้รองรับตัวหนาและขึ้นบรรทัดใหม่
+    let formatted = content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')   // **text** -> <strong>text</strong>
+        .replace(/\n/g, '<br>');                             // \n -> <br>
+
+    messageElement.innerHTML = formatted;
+
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+
+
     window.addLocationToMap = addLocationToMap;
-    
-    // Event listeners
+
     sendButton.addEventListener('click', sendMessage);
     chatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
+        if (e.key === 'Enter') sendMessage();
     });
 }
+
 
 // Add CSS styles programmatically
 const styleElement = document.createElement('style');
@@ -567,5 +510,32 @@ styleElement.textContent = `
         border-bottom: none;
         margin-bottom: 0;
     }
+
+    .typing-indicator .dot {
+    height: 8px;
+    width: 8px;
+    margin: 0 2px;
+    background-color: #999;
+    border-radius: 50%;
+    display: inline-block;
+    animation: blink 1.4s infinite both;
+}
+
+.typing-indicator .dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.typing-indicator .dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 80%, 100% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+}
+
 `;
 document.head.appendChild(styleElement);
