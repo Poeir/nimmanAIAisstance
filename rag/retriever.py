@@ -1,6 +1,6 @@
 from langchain_community.vectorstores import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from rag.config import GOOGLE_API_KEY, CHROMA_DB_DIR
+from config import GOOGLE_API_KEY, CHROMA_DB_DIR
 
 def get_retriever():
     embedding_model = GoogleGenerativeAIEmbeddings(
@@ -11,7 +11,7 @@ def get_retriever():
         persist_directory=CHROMA_DB_DIR,
         embedding_function=embedding_model
     )
-    return vectorstore.as_retriever(search_kwargs={"k": 3})
+    return vectorstore.as_retriever(search_kwargs={"k": 5})
 
 def add_docs_to_vectorstore(docs):
     embedding_model = GoogleGenerativeAIEmbeddings(

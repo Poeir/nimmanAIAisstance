@@ -7,16 +7,21 @@ retriever = get_retriever()
 rag_chain = create_rag_chain(retriever)
 
 def rag_with_memory(user_input):
+    # ดึงประวัติข้อความในรูปแบบ string
     history = memory.chat_memory.messages
-    chat_context = ""
+    chat_history = ""
     for msg in history:
         role = "คุณ" if msg.type == "human" else "AI"
-        chat_context += f"{role}: {msg.content}\n"
+        chat_history += f"{role}: {msg.content}\n"
 
-    response = rag_chain.invoke(user_input)
+    response = rag_chain.invoke({
+        "question": user_input,
+        "chat_history": chat_history,
+    })
     memory.chat_memory.add_user_message(user_input)
     memory.chat_memory.add_ai_message(response)
     return response
+
 
 def main():
     while True:
